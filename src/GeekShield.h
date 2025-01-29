@@ -52,7 +52,7 @@ class GeekShield {
     PFMotor* getPFMotor(Port port, PFMotor::PwmType pwmType = PFMotor::PwmType::Scaled);
     GeekServo* getGeekServo(Port port, int servoMin = 1000, int servoMax = 2000);
     
-    PFMotor* getClassicServo(Port port) {  // original 15-positional servo
+    PFMotor* getProportionalServo(Port port) {  // original 15-positional servo
       return getPFMotor(port, PFMotor::PwmType::Fixed15);
     };
     PFMotor* getSimpleServo(Port port) {   // simplified 3-positional servo

@@ -23,7 +23,9 @@ class CarProfile : public ControlProfile {
   public:
     void setup(GeekShield *shield) {
       motor_drive = shield->getPFMotor(GeekShield::Port::MotorA); 
-      motor_steer = shield->getSimpleServo(GeekShield::Port::MotorB);
+      motor_steer = shield->getSimpleServo(GeekShield::Port::MotorB); // simple servo: -90/0/+90 degrees
+      // alternatevely, a proportional PF servo can be configured
+      //motor_steer = shield->getProportionalServo(GeekShield::Port::MotorB); 
     };
 
     void processController(ControllerPtr ctl) {  
