@@ -1,7 +1,10 @@
 /*
 Example from BluePad32 docs
 
-This sketch can be used to test gamepad connection to the ESP32 and dump controller's data to Serial Monitor
+This sketch can be used to test gamepad connection to the ESP32 
+and dump controller's data to Serial Monitor 
+to understand button codes and stick/trigger deadzones
+
 */
 
 #include <Bluepad32.h>
@@ -52,7 +55,7 @@ void onDisconnectedController(ControllerPtr ctl) {
 
 void dumpGamepad(ControllerPtr ctl) {
     Serial.printf(
-        "idx=%d, dpad: 0x%02x, buttons: 0x%04x, axis L: %4d, %4d, axis R: %4d, %4d, brake: %4d, throttle: %4d, L1:%d, R2:%d, "
+        "idx=%d, dpad: 0x%02x, buttons: 0x%04x, axis L: %4d, %4d, axis R: %4d, %4d, brake: %4d, throttle: %4d, L1:%d, R1:%d, "
         "misc: 0x%02x, A:%d, B:%d, X:%d, Y:%d\n",
         ctl->index(),        // Controller Index
         ctl->dpad(),         // D-pad
