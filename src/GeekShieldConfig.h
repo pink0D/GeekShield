@@ -12,6 +12,10 @@
 
 struct GeekShieldConfig { 
   
+  /*
+  PCB pin mappings 
+  */
+
   int pinVoltage = 0;
   int pinAuxButton = 0;
   int pinPowerOff = 2;
@@ -28,36 +32,66 @@ struct GeekShieldConfig {
   int pinServo4 = 15;
   int pinServo5 = 14;
 
+  /*
+  LED indication (flash) parameters
+  */
+
   double ledBrightness = 0.005;
   double ledFrequency  = 1000;
 
-  long adcLowValueMilliVolts = 500;
+  /*
+  Values for additional ADC calibration. 
+  Unfortunately this doesn't make readings more accurate
+  */
+
+  // this value however is also used to treat analog ADC readings as logical LOW
+  long adcLowValueMilliVolts = 500;       
+
   bool adcAdditionalCalibration = false;
   double adcV1_true     = 1.3;
   double adcV1_reading  = 1.3;  
   double adcV2_true     = 2.6;
   double adcV2_reading  = 2.6;  
 
+  /*
+  Button timings (milliseconds)
+  */
+
+  bool buttonMonitorEnable = true; // set this to 'false' if the PCB has no button
+
   long buttonPressShort = 500;     
   long buttonPressLong  = 1000;    
   long buttonPressHold  = 10000;
 
-  bool buttonProfileSwitching = true;
+  /*
+  Battery charge monitoring
+  */
 
-  double  batteryAdcScale             = 2.75;
+  bool batteryMonitorEnable = true; // set this to 'false' to disable battery monitoring
+
+  // this is the most important parameter, if it is not set explicitly during setup, the board will power off immidiately
+  double  batteryAdcScale             = 0; 
 
   int     batteryCellCount            = 2;
-  double  batteryVoltageCutoff        = 3.2;
-  double  batteryVoltageWarning       = 3.4;
+  double  batteryVoltageCutoff        = 3.4;  // absolute minimum battery cell voltage - the board will be powered off
+  double  batteryVoltageWarning       = 3.5;  // battery level when motors are disabled
 
   long    batteryCheckTaskDelayMillis      = 500;
   int     batteryCheckSampleCount          = 5;
   int     batteryCheckSampleIntervalMillis = 10;
 
-  double pfMotorPwmFrequency   = 1000;
-  double pfMotorPwmMinimumDuty = 0.25;
+  /*
+  Power Functions parameters
+  */
 
-  double motorAntiJitterDefault = 0.05;
+  double pfMotorPwmFrequency   = 1000;  // motor PWM frequency
+  double pfMotorPwmMinimumDuty = 0.25;  // minimum duty cycle
+
+  double motorAntiJitterDefault = 0.05; // minimum change in duty cycle that is sent to motors - used to avoid servo jittering
+
+  /*
+  Controller input adjustments
+  */
 
   int controllerStickDeadzoneLow = 50; 
   int controllerStickDeadzoneHigh = 500;
@@ -65,8 +99,12 @@ struct GeekShieldConfig {
   int controllerTriggerDeadzoneLow = 5;
   int controllerTriggerDeadzoneHigh = 1000;
 
-  long controllerTimeout      = 500;
-  long idleTimeout = 300000;
+  /*
+  Timeouts (milliseconds)
+  */
+
+  long controllerTimeout = 500;    // stop motors when no data from controller is received (possibly out of range)
+  long idleTimeout       = 300000; // power off when there's no input
 };
 
 #endif

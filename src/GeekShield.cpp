@@ -34,8 +34,12 @@ void GeekShield::setup() {
 
   init_nvs();
 
-  BatteryMonitor::instance()->setup();
-  ButtonMonitor::instance()->setup();
+  if (config.batteryMonitorEnable)
+    BatteryMonitor::instance()->setup();
+  
+  if (config.buttonMonitorEnable)
+    ButtonMonitor::instance()->setup();
+  
   LedIndicator::instance()->setup();
 
   BP32.setup(&onConnectedController, &onDisconnectedController);
@@ -228,7 +232,7 @@ bool GeekShield::checkIdleMotors() {
   sum += abs(motorB.getControlValue());
 
   for (int i=0; i<MAX_GEEKSERVOS; i++)
-    sum += motorServo[i].getControlValue();
+    sum += abs(motorServo[i].getControlValue());
 
   if (sum > 0)
     return false;

@@ -11,8 +11,9 @@
 /*
 Drift car driving
 
-Usual controls - left stick to steer, right trigger to accelerate, hold Y button for reverse
+Controls - left stick to steer, right trigger to accelerate, hold Y button for reverse
 
+Additionally:
 1) Left trigger when steering - decrease motor torque for inner wheel while making a turn
 2) Left trigger when not steering - motor braking to stop the car quicly 
 3) Right stick - Drift mode - motors rotate in opposite directions
@@ -61,6 +62,7 @@ class CarDriftProfile : public ControlProfile {
         accelerator = -accelerator;
 
       if (abs(drift) > 0) {
+
         accelerator = abs(drift);
 
         if (drift < 0) { // left rotation

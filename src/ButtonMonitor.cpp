@@ -62,8 +62,7 @@ void ButtonMonitor::task() {
 
     if (click_time < config->buttonPressShort) {
       Serial.println("Click SHORT");
-      if (config->buttonProfileSwitching)
-        GeekShield::instance()->switchActiveProfile();
+      GeekShield::instance()->switchActiveProfile();
     }
 
     // ensure button is released before waiting for next click
