@@ -16,8 +16,8 @@ struct GeekShieldConfig {
   PCB pin mappings 
   */
 
-  int pinVoltage = 0;
-  int pinAuxButton = 0;
+  int pinVoltage = 0;   // not an error, this is GPIO0
+  int pinAuxButton = 0; // not an error, this is GPIO0
   int pinPowerOff = 2;
   int pinLED = 4;
 
