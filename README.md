@@ -45,8 +45,8 @@ Materials needed to make the GeekShield:
 - https://raw.githubusercontent.com/ricardoquesada/esp32-arduino-lib-builder/master/bluepad32_files/package_esp32_bluepad32_index.json
 2. Install [ESP32Servo](https://github.com/madhephaestus/ESP32Servo) library using the Library Manager
 3. Manually add GeekShield library to your workspace
-- create **GeekShield** directory inside *workspace/librarires*
-- copy all contents of this repo to *workspace/librarires/GeekShield*
+- create **GeekShield** directory inside *workspace/libraries*
+- copy all contents of this repo to *workspace/libraries/GeekShield*
 - restart Arduino IDE
 4. Review the examples by opening *File->Examples->GeekSheild->*
 - TestBluepad32 is good to start with to ensure that you've installed Bluepad32 correctly and your gamepad can connect to the board
