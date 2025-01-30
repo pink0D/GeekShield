@@ -42,7 +42,7 @@ Materials needed to make the GeekShield:
 1. Add [ESP32](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html) and [Bluepad32](https://bluepad32.readthedocs.io/en/latest/plat_arduino/) boards in Arduino IDE using the Board Manager:
 - https://espressif.github.io/arduino-esp32/package_esp32_index.json
 - https://raw.githubusercontent.com/ricardoquesada/esp32-arduino-lib-builder/master/bluepad32_files/package_esp32_bluepad32_index.json
-2. Install [ESP32Servo] (https://github.com/madhephaestus/ESP32Servo) library using the Library Manager
+2. Install [ESP32Servo](https://github.com/madhephaestus/ESP32Servo) library using the Library Manager
 3. Manually add GeekShield library to your workspace
 - create **GeekShield** directory inside *workspace/librarires*
 - copy all contents of this repo to *workspace/librarires/GeekShield*
