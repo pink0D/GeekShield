@@ -61,3 +61,8 @@ Materials needed to make the GeekShield:
 - set this value to *(R1+R2) / R1* according to the values of resistors you've soldered to the board.
 - *batteryAdcScale* usually should have a value around 2.8-3.1
 8. Finally, upload the sketch and try the GeekShield
+
+# License
+- The GeekShield is open source and licensed under the MIT License
+- Bluepad32, on which the GeekShield greatly depends, is also open source, licensed under Apache 2.
+- However, Bluepad32 depends on the BTstack made by BlueKitchen GmbH. BTStack is free to use for personal open source projects, but commercial for other uses
