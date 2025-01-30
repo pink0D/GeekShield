@@ -50,7 +50,7 @@ Materials needed to make the GeekShield:
 - create **GeekShield** directory inside *workspace/libraries*
 - copy all contents of this repo to *workspace/libraries/GeekShield*
 - restart Arduino IDE
-4. Review the examples by opening *File->Examples->GeekSheild->*
+4. Review the examples by opening *File->Examples->GeekShield->*
 - TestBluepad32 is good to start with to ensure that you've installed Bluepad32 correctly and your gamepad can connect to the board
 5. Attach either [ESP32-CAM-MB](https://randomnerdtutorials.com/upload-code-esp32-cam-mb-usb/) or [USB-Serial adapter](https://randomnerdtutorials.com/program-upload-code-esp32-cam/)
 6. Set sketch upload parameters:
