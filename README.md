@@ -32,4 +32,4 @@ Materials needed to make the GeekShield:
 - 4x female 7-pin
 - 3x male 5-pin headers (black, yellow and red to distinguish servo pins)
 - 1x angled female 3-pin 
-9. Other basic soldeting accessories
+12. Other basic soldeting accessories
