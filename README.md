@@ -1,5 +1,5 @@
 # GeekShield
-GeekShield is a DIY shiled for ESP32 with Power Functions and GeekServo motors support
+GeekShield is a DIY shield for ESP32 with Power Functions and GeekServo motors support
 
 [![GeekShield board](https://i.postimg.cc/nsvQcyZ2/IMG-9978-thumb.jpg)](https://postimg.cc/nsvQcyZ2)
 
@@ -18,8 +18,8 @@ GeekShield is a DIY shiled for ESP32 with Power Functions and GeekServo motors s
 
 Materials needed to make the GeekShield:
 1. The PCB
-  - Files for PCB production are located in [extras](https://github.com/pink0D/GeekShield/tree/main/extras) directory of this repo.
-  - However, there are very few components needed so you can make the GeekShield even on a [breadboard](https://postimg.cc/V5RcGDs9)
+- Files for PCB production are located in [extras](https://github.com/pink0D/GeekShield/tree/main/extras) directory of this repo.
+- However, there are very few components needed so you can make the GeekShield even on a [breadboard](https://postimg.cc/V5RcGDs9)
 2. ESP32-CAM board
 3. ESP32-CAM-MB or any USB-Serial adapter for uploading Arduino code
 4. [Pololu Mini Pushbutton Power Switch](https://www.pololu.com/product/2808)
