@@ -18,16 +18,17 @@ GeekShield is a DIY shiled for ESP32 with Power Functions and GeekServo motors s
 Materials needed to make the GeekShield:
 1. The PCB
 Files for PCB production are located in [extras](https://github.com/pink0D/GeekShield/tree/main/extras) directory of this repo.
+
 However, there are very few components needed so you can make the GeekShield even on a [breadboard](https://postimg.cc/V5RcGDs9)
-2. ESP32-CAM board
-3. ESP32-CAM-MB or any USB-Serial adapter for uploading Arduino code
-4. [Pololu Mini Pushbutton Power Switch](https://www.pololu.com/product/2808)
-5. [Pololu DRV8835 Dual Motor Driver Carrier](https://www.pololu.com/product/2135)
-6. 2S LiPo battery with high discharge rate
-7. Battery connector
-8. Power Functions extension cable which will be glued on the PCB
-9. 3x6 mm clickable button (through-the-hole/THT mount)
-10. Pin headers
+3. ESP32-CAM board
+4. ESP32-CAM-MB or any USB-Serial adapter for uploading Arduino code
+5. [Pololu Mini Pushbutton Power Switch](https://www.pololu.com/product/2808)
+6. [Pololu DRV8835 Dual Motor Driver Carrier](https://www.pololu.com/product/2135)
+7. 2S LiPo battery with high discharge rate
+8. Battery connector
+9. Power Functions extension cable which will be glued on the PCB
+10. 3x6 mm clickable button (through-the-hole/THT mount)
+11. Pin headers
 - 2x female 8-pin
 - 4x female 7-pin
 - 3x male 5-pin headers (black, yellow and red to distinguish servo pins)
