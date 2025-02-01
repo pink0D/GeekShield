@@ -8,10 +8,10 @@ GeekShield is a DIY shield for ESP32 with Power Functions and GeekServo motors s
 [YouTube demo](https://www.youtube.com/watch?v=292cAnSWLGk)
 
 # Features
-- Classic bluetooth gamepad support (Dualshock 4, DualSense, Xbox Wireless Controller or any other)
+- Classic bluetooth gamepad support (Dualshock 4, DualSense, Xbox Wireless Controller and many others)
 - Direct bluetooth connection (no iOS/Android apps needed)
 - 2x Power Functions ports, maximum 1.5A at peak per channel (2x Buggy Motors can be used together)
-- 5x classic servo (3-wire) connectors (only 1 GeekServo can be controlled when using with PF motors). 
+- 5x classic servo (3-wire) connectors *(only 1 GeekServo can be controlled when using with PF motors)*. 
 - Pluggable 2S LiPo battery
 - Battery discharge protection
 - Ready to use Arduino Library for easy programming with Arduino IDE
