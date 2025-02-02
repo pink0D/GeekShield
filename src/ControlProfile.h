@@ -20,7 +20,7 @@ class ControlProfile {
     virtual void setup(GeekShield *shield) {};
     virtual void processController(ControllerPtr ctl) {};
 
-    bool checkButtonClick(bool &currentValue, bool newValue) {
+    static bool checkButtonClick(bool &currentValue, bool newValue) {
       bool click = false;
       if (newValue) {
         click = !currentValue;

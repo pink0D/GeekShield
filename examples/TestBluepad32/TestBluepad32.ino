@@ -5,6 +5,11 @@ This sketch can be used to test gamepad connection to the ESP32
 and dump controller's data to Serial Monitor 
 to understand button codes and stick/trigger deadzones
 
+1. Reboot the board after uploading sketch
+2. The board will go to pairing mode at startup
+3. Enter pairing mode on your gamepad and wait until the connection is established
+4. Gamepad data is printed in Serial Monitor
+
 */
 
 #include <Bluepad32.h>

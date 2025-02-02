@@ -60,7 +60,7 @@ void ButtonMonitor::task() {
       }
     }
 
-    if (click_time < config->buttonPressShort) {
+    if ( (click_time > config->buttonPressShort) && (click_time < config->buttonPressLong) ){
       Serial.println("Click SHORT");
       GeekShield::instance()->switchActiveProfile();
     }

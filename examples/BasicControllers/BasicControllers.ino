@@ -118,6 +118,17 @@ class GeekProfile : public ControlProfile {
 };
 
 /*
+Callback for profile switching 
+*/
+
+void profileSwitcher(ControllerPtr ctl) {
+
+  static bool btnA = false;
+  if (ControlProfile::checkButtonClick(btnA, ctl->a())) 
+    GeekShield::instance()->switchActiveProfile();
+}
+
+/*
 Main sketch code
 */
 
@@ -133,6 +144,8 @@ void setup() {
   shield->addProfile(new CarProfile());
   shield->addProfile(new TrackedProfile());
   shield->addProfile(new GeekProfile());
+
+  shield->registerControllerCallback(profileSwitcher);
 }
 
 void loop() {

@@ -59,7 +59,7 @@ struct GeekShieldConfig {
 
   bool buttonMonitorEnable = true; // set this to 'false' if the PCB has no button
 
-  long buttonPressShort = 500;     
+  long buttonPressShort = 50;     
   long buttonPressLong  = 1000;    
   long buttonPressHold  = 10000;
 
@@ -73,8 +73,8 @@ struct GeekShieldConfig {
   double  batteryAdcScale             = 0; 
 
   int     batteryCellCount            = 2;
-  double  batteryVoltageCutoff        = 3.4;  // absolute minimum battery cell voltage - the board will be powered off
-  double  batteryVoltageWarning       = 3.5;  // battery level when motors are disabled
+  double  batteryVoltageCutoff        = 3.2;  // absolute minimum battery cell voltage - the board will be powered off
+  double  batteryVoltageWarning       = 3.4;  // battery level when motors are disabled
 
   long    batteryCheckTaskDelayMillis      = 500;
   int     batteryCheckSampleCount          = 5;

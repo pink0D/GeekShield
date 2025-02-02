@@ -25,6 +25,8 @@
 #include "GeekServo.h"
 #include "LedIndicator.h"
 
+typedef std::function<void(ControllerPtr controller)> ControllerCallback;
+
 class GeekShield {
   public:
     static GeekShield* instance() {
@@ -36,11 +38,14 @@ class GeekShield {
       return &config;
     }
 
-    void setup();
     void setup(GeekShieldConfig config) {
         this->config = config;
         setup();
     };
+
+    void registerControllerCallback(const ControllerCallback &callback) {
+      this->controllerCallback = callback;
+    }
 
     void loop();
 
@@ -64,6 +69,8 @@ class GeekShield {
     friend class LedIndicator;
     friend class BatteryMonitor;
     friend class ButtonMonitor;
+
+    void setup();
 
     int getActiveProfileDisplayIndex() {
       return activeProfile + 1;
@@ -98,6 +105,8 @@ class GeekShield {
     ControlProfile* profiles[MAX_PROFILES];
     int activeProfile = 0;
     int numProfiles = 0;
+
+    ControllerCallback controllerCallback = nullptr;
 
     // TODO: add dynamic motor creation upon request by ControlProfile
     PFMotor motorA;

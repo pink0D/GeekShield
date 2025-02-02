@@ -104,7 +104,11 @@ void GeekShield::loop() {
       if (bp32Controller->isGamepad()) {
         if (profiles[activeProfile] != nullptr) {
           
-          profiles[activeProfile]->processController(bp32Controller);   
+          profiles[activeProfile]->processController(bp32Controller); 
+
+          if (controllerCallback) { // check if a callback has been registered
+            controllerCallback(bp32Controller); // call function pointer
+          }  
           
           time_controller_update = esp_timer_get_time(); 
 
@@ -270,6 +274,8 @@ void GeekShield::switchActiveProfile() {
 
   if (numProfiles < 2)
     return;
+
+  Serial.println("Switch profile");
 
   // stop motors & release allocated PWM's by current profile
   stopMotors();
