@@ -50,7 +50,7 @@ double BatteryMonitor::readBatteryVoltage() {
   double value_sum = 0;
   double num_samples = config->batteryCheckSampleCount;
 
-  for (int i=0; i<num_samples; i++) {
+  for (int i=0; i<config->batteryCheckSampleCount; i++) {
     vTaskDelayMillis(config->batteryCheckSampleIntervalMillis);
 
     double pin_value = 0;

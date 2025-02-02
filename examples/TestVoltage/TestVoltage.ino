@@ -38,7 +38,7 @@ double readPinVoltage() {
   double value_sum = 0;
   double num_samples = SAMPLE_COUNT;
 
-  for (int i=0; i<num_samples; i++) {
+  for (int i=0; i<SAMPLE_COUNT; i++) {
     vTaskDelayMillis(SAMPLE_DELAY);
 
     double pin_value = 0;
