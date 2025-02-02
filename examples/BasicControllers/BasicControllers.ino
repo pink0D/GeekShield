@@ -126,7 +126,7 @@ GeekShield *shield = GeekShield::instance();
 void setup() {
 
   GeekShieldConfig config;
-  config.batteryAdcScale = 2.91; // voltage divider factor
+  config.batteryAdcScale = 3.5; // voltage divider factor
 
   shield->setup(config);
 
