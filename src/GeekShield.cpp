@@ -78,14 +78,18 @@ void GeekShield::loop() {
   // stop motors if controller is not sending updates (possible out of range)
   if ( (time_controller_update > 0) && (time_now > time_controller_update + config.controllerTimeout*1000) ){
     Serial.println("Controller timeout");
+    time_controller_update = 0;
     stopMotors();
-    //disconnectController();
-    // LedIndicator::instance()->setStatusPattern(LedIndicator::StatusPattern::Idle);
+    if (config.controllerAutoDisconnect) {
+      disconnectController();
+      LedIndicator::instance()->setStatusPattern(LedIndicator::StatusPattern::Idle);
+    }
   }
 
   // power off when idle for a long time
   if ( (time_auto_power_off > 0) && (time_now > time_auto_power_off) ){
     Serial.println("AUTO power off (idle)");
+    time_auto_power_off = 0;
     powerOff();
   }
 

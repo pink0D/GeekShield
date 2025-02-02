@@ -103,8 +103,9 @@ struct GeekShieldConfig {
   Timeouts (milliseconds)
   */
 
-  long controllerTimeout = 500;    // stop motors when no data from controller is received (possibly out of range)
   long idleTimeout       = 300000; // power off when there's no input
+  long controllerTimeout = 500;    // stop motors when no data from controller is received (possibly out of range)
+  bool controllerAutoDisconnect = false; // drop BT connection if no controller data received
 };
 
 #endif
