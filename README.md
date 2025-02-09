@@ -19,7 +19,7 @@ GeekShield is a DIY shield for ESP32 with Power Functions and GeekServo motors s
 # Wiki
 
 Information about GeekShield is available in [wiki](https://github.com/pink0D/GeekShield/wiki)
-- [Harware](https://github.com/pink0D/GeekShield/wiki/Making-the-GeekShield)
+- [Hardware](https://github.com/pink0D/GeekShield/wiki/Making-the-GeekShield)
 - [Code examples](https://github.com/pink0D/GeekShield/blob/main/examples/BasicControllers/BasicControllers.ino)
 
 # License
