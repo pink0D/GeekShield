@@ -28,4 +28,4 @@ Information about GeekShield is available in [wiki](https://github.com/pink0D/Ge
 - However, Bluepad32 depends on the BTstack made by BlueKitchen GmbH. BTStack is free to use for personal open source projects, but commercial for other uses
 
 # Contacts
-[pink0d.github@gmail.com](mailto:pink0d.github@gmail.com)
+EMail: [pink0D.github@gmail.com](mailto:pink0d.github@gmail.com)
