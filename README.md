@@ -23,7 +23,7 @@ Information about GeekShield is available in [wiki](https://github.com/pink0D/Ge
 - [Code examples](https://github.com/pink0D/GeekShield/blob/main/examples/BasicControllers/BasicControllers.ino)
 
 # License
-- The GeekShield is open source and licensed under the MIT License
+- GeekShield is open source and licensed under the MIT License
 - Bluepad32, on which the GeekShield greatly depends, is also open source, licensed under Apache 2.
 - However, Bluepad32 depends on the BTstack made by BlueKitchen GmbH. BTStack is free to use for personal open source projects, but commercial for other uses
 
