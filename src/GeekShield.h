@@ -55,7 +55,6 @@ class GeekShield {
     enum class Port {MotorA, MotorB, Servo1, Servo2, Servo3, Servo4, Servo5};
 
     PFMotor* getPFMotor(Port port, PFMotor::PwmType pwmType = PFMotor::PwmType::Scaled);
-    GeekServo* getGeekServo(Port port, int servoMin = 1000, int servoMax = 2000);
     
     PFMotor* getProportionalServo(Port port) {  // original 15-positional servo
       return getPFMotor(port, PFMotor::PwmType::Fixed15);
@@ -63,6 +62,15 @@ class GeekShield {
     PFMotor* getSimpleServo(Port port) {   // simplified 3-positional servo
       return getPFMotor(port, PFMotor::PwmType::Fixed3);
     };
+
+    // servo with default signal range
+    GeekServo* getGeekServo(Port port, int servoMin = 1000, int servoMax = 2000);
+
+    // servo with extended signal rangle (GeekServo 360, GeekServo Continuous)
+    GeekServo* getGeekServoExt(Port port, int servoMin = 500, int servoMax = 2500) {
+      return getGeekServo(port, servoMin, servoMax);
+    };
+
 
   protected:
 
