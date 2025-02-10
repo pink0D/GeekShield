@@ -18,9 +18,14 @@ GeekShield is a DIY shield for ESP32 with Power Functions and GeekServo motors s
 
 # Wiki
 
-Most information about GeekShield is available in [wiki](https://github.com/pink0D/GeekShield/wiki)
+Information about GeekShield is available in [wiki](https://github.com/pink0D/GeekShield/wiki)
+- [Hardware](https://github.com/pink0D/GeekShield/wiki/Making-the-GeekShield)
+- [Code examples](https://github.com/pink0D/GeekShield/blob/main/examples/BasicControllers/BasicControllers.ino)
 
 # License
-- The GeekShield is open source and licensed under the MIT License
+- GeekShield is open source and licensed under the MIT License
 - Bluepad32, on which the GeekShield greatly depends, is also open source, licensed under Apache 2.
 - However, Bluepad32 depends on the BTstack made by BlueKitchen GmbH. BTStack is free to use for personal open source projects, but commercial for other uses
+
+# Contacts
+EMail: [pink0D.github@gmail.com](mailto:pink0d.github@gmail.com)
