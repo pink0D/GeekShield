@@ -4,6 +4,7 @@ GeekShield is a DIY shield for ESP32 with Power Functions and GeekServo motors s
 [![GeekShield board](https://i.postimg.cc/nsvQcyZ2/IMG-9978-thumb.jpg)](https://postimg.cc/nsvQcyZ2)
 
 YouTube [demo 1](https://www.youtube.com/watch?v=nqUzDYmt8Ac), [demo 2](https://www.youtube.com/watch?v=292cAnSWLGk)
+
 VK [link](https://vk.com/legolabs)
 
 # Features
