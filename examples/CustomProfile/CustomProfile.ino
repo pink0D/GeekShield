@@ -17,9 +17,9 @@ Car controls with customizeable steering limit:
 
 class CarCustomProfile : public ControlProfile {
   private:
-    PFMotor *motorA;
-    PFMotor *motorB;
-    GeekServo *geekServo;
+    TechnicMotor *motorA;
+    TechnicMotor *motorB;
+    TechnicMotor *geekServo;
 
     bool settingsMode = false;
     LedIndicator *led;
@@ -29,9 +29,9 @@ class CarCustomProfile : public ControlProfile {
 
   public:
     void setup(GeekShield *shield) {
-      motorA = shield->getPFMotor(GeekShield::Port::MotorA); 
-      motorB = shield->getPFMotor(GeekShield::Port::MotorB);
-      geekServo = shield->getGeekServo(GeekShield::Port::Servo1);
+      motorA = shield->setupMotor(GeekShield::Port::MotorA); 
+      motorB = shield->setupMotor(GeekShield::Port::MotorB);
+      geekServo = shield->setupGeekServo(GeekShield::Port::Servo1);
 
       led = LedIndicator::instance();
 

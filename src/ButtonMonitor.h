@@ -14,6 +14,9 @@
 
 class ButtonMonitor {
   public:
+    enum class ClickType {Short, Long, Hold};
+    enum class EventType {Press, Release};
+
     static ButtonMonitor* instance() {
       static ButtonMonitor inst;
       return &inst;
@@ -26,6 +29,12 @@ class ButtonMonitor {
     ButtonMonitor() {};
 
     const GeekShieldConfig *config;
+
+    typedef int (ButtonMonitor::*readPinFuncPtr_t)(); 
+    readPinFuncPtr_t readPinFuncPtr;
+
+    int readDigitalPin();
+    int readAnalogPin();
 };
 
 #endif

@@ -14,6 +14,7 @@
 #define TASK_DEFAULT_DELAY_MILLIS 50
 
 #define MAX_PROFILES      4
+#define MAX_PFMOTORS      4
 #define MAX_GEEKSERVOS    5
 
 #define vTaskDelayMillis(m) vTaskDelay(pdMS_TO_TICKS(m));

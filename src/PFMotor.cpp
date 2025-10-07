@@ -11,7 +11,7 @@
 #include "PFMotor.h"
 #include "GeekShield.h"
 
-void PFMotor::setup(int pin_c1, int pin_c2, PwmType pwm_type) {
+TechnicMotor* PFMotor::setup(int pin_c1, int pin_c2, PwmType pwm_type) {
 
   const GeekShieldConfig *config = GeekShield::instance()->getConfig();
 
@@ -21,7 +21,7 @@ void PFMotor::setup(int pin_c1, int pin_c2, PwmType pwm_type) {
   setPwmType(pwm_type);
   config_min_duty = config->pfMotorPwmMinimumDuty;
   
-  TechnicMotor::setup();
+  return TechnicMotor::setup();
 }
 
 void PFMotor::release() {

@@ -37,8 +37,8 @@ public:
 protected:
   // c1 and c2 must be within 0..1 range
   virtual void updateOutput(double new_c1, double new_c2, bool brake = false) {};
-  void setup();
-  virtual void release();
+  TechnicMotor* setup();
+  virtual void release() {};
 
 private:
   double ctl_val = 0;

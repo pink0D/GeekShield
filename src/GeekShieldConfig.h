@@ -18,13 +18,17 @@ struct GeekShieldConfig {
 
   int pinVoltage = 0;   // not an error, this is GPIO0
   int pinAuxButton = 0; // not an error, this is GPIO0
-  int pinPowerOff = 2;
+  int pinPowerCtl = 2;
   int pinLED = 4;
 
   int pinMotorA1 = 14;
   int pinMotorA2 = 15;
   int pinMotorB1 = 13;
   int pinMotorB2 = 12;
+  int pinMotorC1 = 0;
+  int pinMotorC2 = 0;
+  int pinMotorD1 = 0;
+  int pinMotorD2 = 0;
 
   int pinServo1 = 16;
   int pinServo2 = 12;
@@ -33,9 +37,17 @@ struct GeekShieldConfig {
   int pinServo5 = 14;
 
   /*
+  Power control parameters
+  */
+
+  int powerStateOn  = LOW;
+  int powerStateOff = HIGH;
+
+  /*
   LED indication (flash) parameters
   */
 
+  bool ledRGB = false;
   double ledBrightness = 0.005;
   double ledFrequency  = 1000;
 
@@ -59,9 +71,9 @@ struct GeekShieldConfig {
 
   bool buttonMonitorEnable = true; // set this to 'false' if the PCB has no button
 
-  long buttonPressShort = 50;     
-  long buttonPressLong  = 1000;    
-  long buttonPressHold  = 10000;
+  long buttonPressShort = 1000;     
+  long buttonPressLong  = 10000;    
+  long buttonPressHold  = 20000;
 
   /*
   Battery charge monitoring
@@ -74,11 +86,11 @@ struct GeekShieldConfig {
 
   int     batteryCellCount            = 2;
   double  batteryVoltageCutoff        = 3.2;  // absolute minimum battery cell voltage - the board will be powered off
-  double  batteryVoltageWarning       = 3.4;  // battery level when motors are disabled
+  double  batteryVoltageWarning       = 3.3;  // battery level when motors are disabled
 
-  long    batteryCheckTaskDelayMillis      = 500;
+  long    batteryCheckTaskDelayMillis      = 2000;
   int     batteryCheckSampleCount          = 5;
-  int     batteryCheckSampleIntervalMillis = 10;
+  int     batteryCheckSampleIntervalMillis = 100;
 
   /*
   Power Functions parameters
@@ -106,6 +118,34 @@ struct GeekShieldConfig {
   long idleTimeout       = 300000; // power off when there's no input
   long controllerTimeout = 500;    // stop motors when no data from controller is received (possibly out of range)
   bool controllerAutoDisconnect = false; // drop BT connection if no controller data received
+};
+
+struct GeekShield20Config : public GeekShieldConfig{ 
+  public:
+    GeekShield20Config() {
+      
+      batteryAdcScale = 4.4;
+      powerStateOn = HIGH;
+      powerStateOff = LOW;
+      ledRGB = true;
+      ledBrightness = 0.15;
+
+      pinVoltage = 37;   
+      pinAuxButton = 21; 
+      pinPowerCtl = 20;
+      pinLED = 13;
+
+      pinMotorA1 = 32;
+      pinMotorA2 = 33;
+      pinMotorB1 = 19;
+      pinMotorB2 = 22;
+
+      pinServo1 = 25;
+      pinServo2 = 26;
+      pinServo3 = 27;
+      pinServo4 = 14;
+      pinServo5 = 0;      
+    }
 };
 
 #endif

@@ -10,11 +10,13 @@
 #include "TechnicMotor.h"
 #include "GeekShield.h"
 
-void TechnicMotor::setup() {
+TechnicMotor* TechnicMotor::setup() {
 
   setAntiJitter(GeekShield::instance()->getConfig()->motorAntiJitterDefault);
   invertControl(false);
   limitControl(1.0);
+
+  return this;
 }
 
 void TechnicMotor::updateMotor(double new_ctl_val, bool brake) {

@@ -16,7 +16,8 @@ to understand button codes and stick/trigger deadzones
 
 ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
-#define POWEROFF_PIN 2
+#define POWERCTL_PIN 21
+#define POWERCTL_VALUE HIGH
 #define LED_PIN 4
 
 // This callback gets called any time a new gamepad is connected.
@@ -99,8 +100,8 @@ void processControllers() {
 
 void setup() {
 
-  pinMode(POWEROFF_PIN, OUTPUT);
-  digitalWrite(POWEROFF_PIN, LOW);
+  pinMode(POWERCTL_PIN, OUTPUT);
+  digitalWrite(POWERCTL_PIN, POWERCTL_VALUE);
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);

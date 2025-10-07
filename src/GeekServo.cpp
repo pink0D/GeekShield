@@ -9,13 +9,13 @@
 
 #include "GeekServo.h"
 
-void GeekServo::setup(int pin, int servo_min, int servo_max){
+TechnicMotor* GeekServo::setup(int pin, int servo_min, int servo_max){
   this->servo_min = servo_min;
   this->servo_max = servo_max;
 
   attach(pin,servo_min,servo_max);
 
-  TechnicMotor::setup();
+  return TechnicMotor::setup();
 }
 
 void GeekServo::release() {

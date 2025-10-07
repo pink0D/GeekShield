@@ -8,26 +8,35 @@
 //
 
 #include "LedIndicator.h"
+#include "RgbIndicator.h"
 #include "GeekShield.h"
 
 void taskLedIndicator(void *param){
-  LedIndicator::instance()->task();
+  LedIndicator *inst = LedIndicator::instance();
+  while (1) {
+    vTaskDelay(1);
+    inst->showStatusPattern();
+  }
 }
 
-void LedIndicator::setup() {
+LedIndicator* LedIndicator::instance() {
+    
+  LedIndicator *inst = nullptr;
 
-  config = GeekShield::instance()->getConfig();
+  if (GeekShield::instance()->getConfig()->ledRGB)
+    inst = RgbIndicator::instance();
+  else 
+    inst = SimpleIndicator::instance();
 
-  pinMode(config->pinLED, OUTPUT);
-  digitalWrite(config->pinLED, LOW);
+  static bool taskCreated = false;
+  if (!taskCreated) 
+  {
+    Serial.println("led task create");
+    xTaskCreate(taskLedIndicator, "LedIndicator", TASK_STACK_SIZE, NULL, 0, NULL);
+    taskCreated = true;
+  }
 
-  pwm.attachPin(config->pinLED, config->ledFrequency, 12);
-
-  xTaskCreate(taskLedIndicator, "LedIndicator", TASK_STACK_SIZE, NULL, 0, NULL);
-}
-
-void LedIndicator::setLedLevel(uint8_t val){
-  pwm.writeScaled( ( ( (double)val)  / 255.0 ) * config->ledBrightness);
+  return inst;
 }
 
 void LedIndicator::patternDelayMillis(int timeout) {
@@ -38,75 +47,92 @@ void LedIndicator::patternDelayMillis(int timeout) {
 
     if (eventPattern != EventPattern::None) {
 
-      switch (eventPattern) {
-        case EventPattern::Reset:
-          setLedLevel(255); vTaskDelayMillis(100);
-          setLedLevel(0);   vTaskDelayMillis(100);
-          setLedLevel(255); vTaskDelayMillis(100);
-          setLedLevel(0);   vTaskDelayMillis(100);
-          setLedLevel(255); vTaskDelayMillis(100);
-          setLedLevel(0);   vTaskDelayMillis(100);
-          setLedLevel(255); vTaskDelayMillis(100);
-          setLedLevel(0);   vTaskDelayMillis(100);
-          break;      
-        case EventPattern::ProfileSelect:
-          for (int i=0; i<GeekShield::instance()->getActiveProfileDisplayIndex(); i++) {
-            setLedLevel(255); vTaskDelayMillis(200);
-            setLedLevel(0);   vTaskDelayMillis(200);
-          }
-          break;
-        case EventPattern::SettingSaved:
-            setLedLevel(255); vTaskDelayMillis(200);
-            setLedLevel(0);   vTaskDelayMillis(200);
-            setLedLevel(255); vTaskDelayMillis(200);
-            setLedLevel(0);   vTaskDelayMillis(200);
-          break;
-      }      
-
+      showEventPattern();
       eventPattern = EventPattern::None;
     }
   }
 }
 
-void LedIndicator::task() {
-    while (1) {
-      vTaskDelayMillis(TASK_DEFAULT_DELAY_MILLIS);
+/*
+  Simple monochome LED
+*/
 
-      switch (statusPattern) {
-        case StatusPattern::None:
-          setLedLevel(0);   
-          break;
-        case StatusPattern::Idle:
-          //setLedLevel(255); vTaskDelayMillis(750);
-          for (int i=0; i<256; i++) {
-            setLedLevel(i);
-            vTaskDelayMillis(10);
-          }
-          setLedLevel(0);   
-          patternDelayMillis(750);
-          break;
-        case StatusPattern::Connected:
-          setLedLevel(255); vTaskDelayMillis(200);
-          setLedLevel(0);   
-          patternDelayMillis(5000);
-          break;
-        case StatusPattern::Pairing:
-          setLedLevel(255); vTaskDelayMillis(100);
-          setLedLevel(0);   vTaskDelayMillis(100);
-          setLedLevel(255); vTaskDelayMillis(100);
-          setLedLevel(0);   
-          patternDelayMillis(2000);
-          break;
-        case StatusPattern::BatteryLow:
-          setLedLevel(255); vTaskDelayMillis(200);
-          setLedLevel(0);   
-          patternDelayMillis(5000);
-          break;
-        case StatusPattern::Settings:
-          setLedLevel(255); vTaskDelayMillis(200);
-          setLedLevel(0);   
-          patternDelayMillis(200);
-          break;
+void SimpleIndicator::setup() {
+
+  config = GeekShield::instance()->getConfig();
+
+  pinMode(config->pinLED, OUTPUT);
+  digitalWrite(config->pinLED, LOW);
+
+  pwm.attachPin(config->pinLED, config->ledFrequency, 12);
+}
+
+void SimpleIndicator::setLedLevel(uint8_t val){
+  pwm.writeScaled( ( ( (double)val)  / 255.0 ) * config->ledBrightness);
+}
+
+void SimpleIndicator::showStatusPattern() {
+  switch (statusPattern) {
+    case StatusPattern::None:
+      setLedLevel(0);   
+      break;
+    case StatusPattern::Idle:
+      //setLedLevel(255); vTaskDelayMillis(750);
+      for (int i=0; i<256; i++) {
+        setLedLevel(i);
+        vTaskDelayMillis(10);
       }
-    }
+      setLedLevel(0);   
+      patternDelayMillis(750);
+      break;
+    case StatusPattern::Connected:
+      setLedLevel(255); vTaskDelayMillis(200);
+      setLedLevel(0);   
+      patternDelayMillis(5000);
+      break;
+    case StatusPattern::Pairing:
+      setLedLevel(255); vTaskDelayMillis(100);
+      setLedLevel(0);   vTaskDelayMillis(100);
+      setLedLevel(255); vTaskDelayMillis(100);
+      setLedLevel(0);   
+      patternDelayMillis(2000);
+      break;
+    case StatusPattern::BatteryLow:
+      setLedLevel(255); vTaskDelayMillis(200);
+      setLedLevel(0);   
+      patternDelayMillis(5000);
+      break;
+    case StatusPattern::Settings:
+      setLedLevel(255); vTaskDelayMillis(200);
+      setLedLevel(0);   
+      patternDelayMillis(200);
+      break;
+  }
+}
+
+void SimpleIndicator::showEventPattern() {
+  switch (eventPattern) {
+    case EventPattern::Reset:
+      setLedLevel(255); vTaskDelayMillis(100);
+      setLedLevel(0);   vTaskDelayMillis(100);
+      setLedLevel(255); vTaskDelayMillis(100);
+      setLedLevel(0);   vTaskDelayMillis(100);
+      setLedLevel(255); vTaskDelayMillis(100);
+      setLedLevel(0);   vTaskDelayMillis(100);
+      setLedLevel(255); vTaskDelayMillis(100);
+      setLedLevel(0);   vTaskDelayMillis(100);
+      break;      
+    case EventPattern::ProfileSelect:
+      for (int i=0; i<GeekShield::instance()->getActiveProfileDisplayIndex(); i++) {
+        setLedLevel(255); vTaskDelayMillis(200);
+        setLedLevel(0);   vTaskDelayMillis(200);
+      }
+      break;
+    case EventPattern::SettingSaved:
+        setLedLevel(255); vTaskDelayMillis(200);
+        setLedLevel(0);   vTaskDelayMillis(200);
+        setLedLevel(255); vTaskDelayMillis(200);
+        setLedLevel(0);   vTaskDelayMillis(200);
+      break;
+  }      
 }

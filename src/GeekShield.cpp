@@ -20,15 +20,32 @@ GeekShield::GeekShield() {
     profiles[i] = nullptr;
 }
 
+void GeekShield::setupMotorPin(int pin) {
+  if (pin > 0) {
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+  }
+}
+
 void GeekShield::setup() {
 
-  pinMode(config.pinPowerOff, OUTPUT);  digitalWrite(config.pinPowerOff, LOW);
+  pinMode(config.pinPowerCtl, OUTPUT);  
+  digitalWrite(config.pinPowerCtl,  config.powerStateOn);
 
-  pinMode(config.pinServo1, OUTPUT);    digitalWrite(config.pinServo1, LOW);
-  pinMode(config.pinServo2, OUTPUT);    digitalWrite(config.pinServo2, LOW);
-  pinMode(config.pinServo3, OUTPUT);    digitalWrite(config.pinServo3, LOW);
-  pinMode(config.pinServo4, OUTPUT);    digitalWrite(config.pinServo4, LOW);
-  pinMode(config.pinServo5, OUTPUT);    digitalWrite(config.pinServo5, LOW);
+  setupMotorPin(config.pinServo1);
+  setupMotorPin(config.pinServo2);
+  setupMotorPin(config.pinServo3);
+  setupMotorPin(config.pinServo4);
+  setupMotorPin(config.pinServo5);
+
+  setupMotorPin(config.pinMotorA1);
+  setupMotorPin(config.pinMotorA2);
+  setupMotorPin(config.pinMotorB1);
+  setupMotorPin(config.pinMotorB2);
+  setupMotorPin(config.pinMotorC1);
+  setupMotorPin(config.pinMotorC2);
+  setupMotorPin(config.pinMotorD1);
+  setupMotorPin(config.pinMotorD2);
 
   Serial.begin(115200);
 
@@ -42,8 +59,8 @@ void GeekShield::setup() {
   
   LedIndicator::instance()->setup();
 
+  // ifdef BP32_ARDUINO_BLUEPAD32_H
   BP32.setup(&onConnectedController, &onDisconnectedController);
-  //BP32.forgetBluetoothKeys();
   BP32.enableVirtualDevice(false);
   BP32.enableNewBluetoothConnections(false); // pairing disabled by default
 
@@ -103,6 +120,8 @@ void GeekShield::loop() {
     if (bp32Controller && bp32Controller->isConnected() && bp32Controller->hasData()) {
       if (bp32Controller->isGamepad()) {
         if (profiles[activeProfile] != nullptr) {
+
+          LedIndicator::instance()->setStatusPattern(LedIndicator::StatusPattern::Connected);
           
           profiles[activeProfile]->processController(bp32Controller); 
 
@@ -159,75 +178,84 @@ void GeekShield::disconnectController() {
 }
 
 void GeekShield::enablePairing() {
+  Serial.println("BLUETOOTH PAIRING");
+
   BP32.enableNewBluetoothConnections(true);
   LedIndicator::instance()->setStatusPattern(LedIndicator::StatusPattern::Pairing);
 }
 
 void GeekShield::resetPairing() {
+  Serial.println("BLUETOOTH RESET");
+
   disconnectController();
   BP32.forgetBluetoothKeys();
   LedIndicator::instance()->setEventPattern(LedIndicator::EventPattern::Reset);
 }
 
-void GeekShield::lowBatteryWarning() {
-  lowPowerMode = true;
-  stopMotors();
-  disconnectController();
-  LedIndicator::instance()->setStatusPattern(LedIndicator::StatusPattern::BatteryLow);
-}
-
 void GeekShield::powerOff() {
+  Serial.println("POWER OFF");
+  vTaskDelayMillis(100);
+
   disconnectController();
-  digitalWrite(config.pinPowerOff, HIGH);
+  digitalWrite(config.pinPowerCtl, config.powerStateOff);
 }
 
-PFMotor* GeekShield::getPFMotor(Port port, PFMotor::PwmType pwmType) {
+TechnicMotor* GeekShield::setupMotor(Port port, PFMotor::PwmType pwmType) {
 
   switch (port) {
 
     case Port::MotorA:
-      motorA.setup(config.pinMotorA1, config.pinMotorA2, pwmType);
-      return &motorA;
+      if (config.pinMotorA1 > 0 && config.pinMotorA2 > 0) 
+        return motorPF[0].setup(config.pinMotorA1, config.pinMotorA2, pwmType);
 
     case Port::MotorB:
-      motorB.setup(config.pinMotorB1, config.pinMotorB2, pwmType);
-      return &motorB;
-  }
+      if (config.pinMotorB1 > 0 && config.pinMotorB2 > 0) 
+        return motorPF[1].setup(config.pinMotorB1, config.pinMotorB2, pwmType);
 
-  return nullptr;
+    case Port::MotorC:
+      if (config.pinMotorC1 > 0 && config.pinMotorC2 > 0) 
+        return motorPF[2].setup(config.pinMotorC1, config.pinMotorC2, pwmType);
+    
+    case Port::MotorD:
+      if (config.pinMotorD1 > 0 && config.pinMotorD2 > 0) 
+        return motorPF[3].setup(config.pinMotorD1, config.pinMotorD2, pwmType);
+    }
+
+  return &DummyMotor;
 }
 
-GeekServo* GeekShield::getGeekServo(Port port, int servoMin, int servoMax) {
+TechnicMotor* GeekShield::setupGeekServo(Port port, int servoMin, int servoMax) {
 
   switch (port) {
 
     case Port::Servo1:
-      motorServo[0].setup(config.pinServo1, servoMin, servoMax);
-      return &motorServo[0];
+      if (config.pinServo1 > 0) 
+        return motorServo[0].setup(config.pinServo1, servoMin, servoMax);
 
     case Port::Servo2:
-      motorServo[1].setup(config.pinServo2, servoMin, servoMax);
-      return &motorServo[1];
+      if (config.pinServo2 > 0) 
+        return motorServo[1].setup(config.pinServo2, servoMin, servoMax);
 
     case Port::Servo3:
-      motorServo[2].setup(config.pinServo3, servoMin, servoMax);
-      return &motorServo[2];
+      if (config.pinServo3 > 0) 
+        return motorServo[2].setup(config.pinServo3, servoMin, servoMax);
 
     case Port::Servo4:
-      motorServo[3].setup(config.pinServo4, servoMin, servoMax);
-      return &motorServo[3];
+      if (config.pinServo4 > 0) 
+        return motorServo[3].setup(config.pinServo4, servoMin, servoMax);
 
     case Port::Servo5:
-      motorServo[4].setup(config.pinServo5, servoMin, servoMax);
-      return &motorServo[4];
+      if (config.pinServo5 > 0) 
+        return motorServo[4].setup(config.pinServo5, servoMin, servoMax);
   }
 
-  return nullptr;
+  return &DummyMotor;
 }
 
 void GeekShield::stopMotors() {
-  motorA.updateMotor(0);
-  motorB.updateMotor(0);
+
+  for (int i=0; i<MAX_PFMOTORS; i++)
+    motorPF[i].updateMotor(0);
 
   for (int i=0; i<MAX_GEEKSERVOS; i++)
     motorServo[i].updateMotor(0);
@@ -236,8 +264,8 @@ void GeekShield::stopMotors() {
 bool GeekShield::checkIdleMotors() {
   double sum = 0;
 
-  sum += abs(motorA.getControlValue());
-  sum += abs(motorB.getControlValue());
+  for (int i=0; i<MAX_PFMOTORS; i++)
+    sum += abs(motorPF[i].getControlValue());
 
   for (int i=0; i<MAX_GEEKSERVOS; i++)
     sum += abs(motorServo[i].getControlValue());
@@ -249,8 +277,9 @@ bool GeekShield::checkIdleMotors() {
 }
 
 void GeekShield::releaseMotors() {
-  motorA.release();
-  motorB.release();
+
+  for (int i=0; i<MAX_PFMOTORS; i++)
+    motorPF[i].release();
 
   for (int i=0; i<MAX_GEEKSERVOS; i++)
     motorServo[i].release();
@@ -292,4 +321,40 @@ void GeekShield::switchActiveProfile() {
   }
 
   LedIndicator::instance()->setEventPattern(LedIndicator::EventPattern::ProfileSelect);
+}
+
+void GeekShield::processBatteryEvent(BatteryMonitor::EventType eventType) {
+  
+  if (eventType == BatteryMonitor::EventType::BatteryWarning) {
+    Serial.println("LOW BATTERY");
+
+    lowPowerMode = true;
+    stopMotors();
+    LedIndicator::instance()->setStatusPattern(LedIndicator::StatusPattern::BatteryLow);
+  }
+
+  if (eventType == BatteryMonitor::EventType::BatteryLow) {
+    powerOff();
+  }
+}
+
+void GeekShield::processButtonEvent(ButtonMonitor::ClickType clickType, ButtonMonitor::EventType eventType) {
+
+  if (clickType == ButtonMonitor::ClickType::Short) {
+    if (eventType == ButtonMonitor::EventType::Press) {
+      LedIndicator::instance()->setEventPattern(LedIndicator::EventPattern::PowerOff);
+    }
+    if (eventType == ButtonMonitor::EventType::Release) {
+      powerOff();
+    }
+  }
+
+  if (clickType == ButtonMonitor::ClickType::Long && eventType == ButtonMonitor::EventType::Press) {
+    enablePairing();
+  }
+
+  if (clickType == ButtonMonitor::ClickType::Hold && eventType == ButtonMonitor::EventType::Release) {
+    resetPairing();
+    enablePairing();
+  }
 }

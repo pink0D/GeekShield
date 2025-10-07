@@ -29,7 +29,7 @@ public:
   };
 
 protected:
-  void setup(int pin_c1, int pin_c2, PwmType pwm_type = PwmType::Exact);
+  TechnicMotor* setup(int pin_c1, int pin_c2, PwmType pwm_type = PwmType::Exact);
 
   void release();
 

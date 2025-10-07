@@ -17,13 +17,13 @@ Controls: left stick to steer, right trigger to accelerate, hold triangle to rev
 
 class CarProfile : public ControlProfile {
   private:
-    PFMotor *motor_drive;
-    PFMotor *motor_steer;
+    TechnicMotor *motor_drive;
+    TechnicMotor *motor_steer;
 
   public:
     void setup(GeekShield *shield) {
-      motor_drive = shield->getPFMotor(GeekShield::Port::MotorA); 
-      motor_steer = shield->getSimpleServo(GeekShield::Port::MotorB); // simple servo: -90/0/+90 degrees
+      motor_drive = shield->setupMotor(GeekShield::Port::MotorA); 
+      motor_steer = shield->setupSimpleServo(GeekShield::Port::MotorB); // simple servo: -90/0/+90 degrees
       // alternatevely, a proportional PF servo can be configured
       //motor_steer = shield->getProportionalServo(GeekShield::Port::MotorB); 
     };
@@ -50,13 +50,13 @@ Controls: left & right sticks drive tracks independently
 
 class TrackedProfile : public ControlProfile {
   private:
-    PFMotor *motorA;
-    PFMotor *motorB;
+    TechnicMotor *motorA;
+    TechnicMotor *motorB;
 
   public:
     void setup(GeekShield *shield) {
-      motorA = shield->getPFMotor(GeekShield::Port::MotorA); 
-      motorB = shield->getPFMotor(GeekShield::Port::MotorB);
+      motorA = shield->setupMotor(GeekShield::Port::MotorA); 
+      motorB = shield->setupMotor(GeekShield::Port::MotorB);
 
       // tracked vehicles usually have gears on different sides of the motors
       // so one of the motors needs to be inverted to move forward 
@@ -82,19 +82,19 @@ Controls: left stick to steer, right trigger to accelerate, hold triangle to rev
 
 class GeekProfile : public ControlProfile {
   private:
-    PFMotor *motorA;
-    PFMotor *motorB;
-    GeekServo *geekServo;
+    TechnicMotor *motorA;
+    TechnicMotor *motorB;
+    TechnicMotor *geekServo;
 
     // limit maximum servo rotation to 67.5 degrees (75% of full 90 degree turn)
     double steerLimit = 0.75;
 
   public:
     void setup(GeekShield *shield) {
-      motorA = shield->getPFMotor(GeekShield::Port::MotorA); 
-      motorB = shield->getPFMotor(GeekShield::Port::MotorB);
+      motorA = shield->setupMotor(GeekShield::Port::MotorA); 
+      motorB = shield->setupMotor(GeekShield::Port::MotorB);
 
-      geekServo = shield->getGeekServo(GeekShield::Port::Servo1);
+      geekServo = shield->setupGeekServo(GeekShield::Port::Servo1);
       geekServo->invertControl(true);       // invert direction if links are in front of the wheels
       geekServo->limitControl(steerLimit);  // set rotation limit
     };

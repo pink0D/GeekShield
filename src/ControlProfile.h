@@ -20,6 +20,9 @@ class ControlProfile {
     virtual void setup(GeekShield *shield) {};
     virtual void processController(ControllerPtr ctl) {};
 
+    // override to indicate active profile with RGB LED (0xRRGGBB)
+    virtual unsigned long getLedColor() { return 0; };
+
     static bool checkButtonClick(bool &currentValue, bool newValue) {
       bool click = false;
       if (newValue) {

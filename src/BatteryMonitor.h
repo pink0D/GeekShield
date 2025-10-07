@@ -10,10 +10,12 @@
 #ifndef _BATTERY_MONITOR_H_
 #define _BATTERY_MONITOR_H_
 
-#include "GeekShield.h"
+#include "GeekShieldConfig.h"
 
 class BatteryMonitor {
   public:
+    enum class EventType {BatteryWarning, BatteryLow};
+
     static BatteryMonitor* instance() {
       static BatteryMonitor inst;
       return &inst;

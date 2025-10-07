@@ -24,6 +24,8 @@
 #include "PFMotor.h"
 #include "GeekServo.h"
 #include "LedIndicator.h"
+#include "ButtonMonitor.h"
+#include "BatteryMonitor.h"
 
 typedef std::function<void(ControllerPtr controller)> ControllerCallback;
 
@@ -52,25 +54,33 @@ class GeekShield {
     void addProfile(ControlProfile *profile);
     void switchActiveProfile();
 
-    enum class Port {MotorA, MotorB, Servo1, Servo2, Servo3, Servo4, Servo5};
+    enum class Port {MotorA, MotorB, MotorC, MotorD, Servo1, Servo2, Servo3, Servo4, Servo5};
 
-    PFMotor* getPFMotor(Port port, PFMotor::PwmType pwmType = PFMotor::PwmType::Scaled);
+    TechnicMotor* setupMotor(Port port, PFMotor::PwmType pwmType = PFMotor::PwmType::Scaled);
     
-    PFMotor* getProportionalServo(Port port) {  // original 15-positional servo
-      return getPFMotor(port, PFMotor::PwmType::Fixed15);
+    TechnicMotor* setupProportionalServo(Port port) {  // original 15-positional servo
+      return setupMotor(port, PFMotor::PwmType::Fixed15);
     };
-    PFMotor* getSimpleServo(Port port) {   // simplified 3-positional servo
-      return getPFMotor(port, PFMotor::PwmType::Fixed3);
+    TechnicMotor* setupSimpleServo(Port port) {   // simplified 3-positional servo
+      return setupMotor(port, PFMotor::PwmType::Fixed3);
     };
 
     // servo with default signal range
-    GeekServo* getGeekServo(Port port, int servoMin = 1000, int servoMax = 2000);
+    TechnicMotor* setupGeekServo(Port port, int servoMin = 1000, int servoMax = 2000);
 
-    // servo with extended signal rangle (GeekServo 360, GeekServo Continuous)
-    GeekServo* getGeekServoExt(Port port, int servoMin = 500, int servoMax = 2500) {
-      return getGeekServo(port, servoMin, servoMax);
+    // servo with extended signal range (GeekServo 360, GeekServo Continuous)
+    TechnicMotor* setupGeekServoExt(Port port, int servoMin = 500, int servoMax = 2500) {
+      return setupGeekServo(port, servoMin, servoMax);
     };
 
+    int getActiveProfileDisplayIndex() {
+      return activeProfile + 1;
+    };
+
+    unsigned long getActiveProfileDisplayColor() {
+      ControlProfile *pActiveProfile = profiles[activeProfile];
+      return pActiveProfile->getLedColor();
+    };
 
   protected:
 
@@ -80,16 +90,8 @@ class GeekShield {
 
     void setup();
 
-    int getActiveProfileDisplayIndex() {
-      return activeProfile + 1;
-    };
-
-    void enablePairing();
-    void resetPairing();
-
-    void lowBatteryWarning();
-    void powerOff();
-    
+    void processButtonEvent(ButtonMonitor::ClickType clickType, ButtonMonitor::EventType eventType);
+    void processBatteryEvent(BatteryMonitor::EventType eventType);   
 
   private:
     GeekShield();
@@ -97,6 +99,7 @@ class GeekShield {
     GeekShieldConfig config;
 
     void init_nvs();
+    void setupMotorPin(int pin);
 
     void disconnectController();
 
@@ -116,15 +119,19 @@ class GeekShield {
 
     ControllerCallback controllerCallback = nullptr;
 
-    // TODO: add dynamic motor creation upon request by ControlProfile
-    PFMotor motorA;
-    PFMotor motorB;
-    GeekServo motorServo[MAX_GEEKSERVOS];
+    PFMotor      motorPF[MAX_PFMOTORS];
+    GeekServo    motorServo[MAX_GEEKSERVOS];
+    TechnicMotor DummyMotor; // motor which is returned if no pins found in config
+
+    void powerOff();
 
     void stopMotors();
     void releaseMotors();
 
     bool checkIdleMotors();
+
+    void enablePairing();
+    void resetPairing();
 };
 
 #endif

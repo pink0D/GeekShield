@@ -15,15 +15,11 @@
 class LedIndicator {
   public:
     enum class StatusPattern {None, Idle, Pairing, Connected, BatteryLow, Settings};
-    enum class EventPattern {None, Reset, ProfileSelect, SettingSaved};
+    enum class EventPattern {None, PowerOff, Reset, ProfileSelect, SettingSaved};
 
-    static LedIndicator* instance() {
-      static LedIndicator inst;
-      return &inst;
-    };
+    static LedIndicator* instance();
 
-    void setup();
-    void task();
+    virtual void setup() {};
 
     void setStatusPattern(StatusPattern statusPattern) {
       this->statusPattern = statusPattern;
@@ -33,16 +29,38 @@ class LedIndicator {
       this->eventPattern = eventPattern;
     };
 
-  private:
+    virtual void showStatusPattern() {};
+    virtual void showEventPattern() {};
+
+  protected:
     LedIndicator() {};
 
-    const GeekShieldConfig *config;
-
-    void setLedLevel(uint8_t val);
     void patternDelayMillis(int timeout);
 
     StatusPattern statusPattern = StatusPattern::None;
     EventPattern eventPattern = EventPattern::None;
+
+};
+
+class SimpleIndicator : public LedIndicator {
+  public:
+
+    static SimpleIndicator* instance() {
+      static SimpleIndicator inst;
+      return &inst;
+    };
+
+    virtual void setup();
+
+    virtual void showStatusPattern();
+    virtual void showEventPattern();
+
+  private:
+    SimpleIndicator() {};
+
+    const GeekShieldConfig *config;
+
+    void setLedLevel(uint8_t val);
 
     ESP32PWM pwm;
 };

@@ -7,11 +7,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 //
 
-#include <FreeRTOS/FreeRTOS.h>
-#include <FreeRTOS/task.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
-#include "BatteryMonitor.h"
 #include "GeekShield.h"
+#include "BatteryMonitor.h"
 
 void taskBatteryMonitor(void *param){
   BatteryMonitor::instance()->task();
@@ -33,13 +33,11 @@ void BatteryMonitor::task() {
     Serial.printf("Battery voltage = %.3f V \n", bat_voltage);
 
     if (bat_voltage < config->batteryCellCount * config->batteryVoltageWarning) {
-      Serial.println("Going to low power mode");
-      GeekShield::instance()->lowBatteryWarning();
+      GeekShield::instance()->processBatteryEvent(EventType::BatteryWarning);
     }
 
     if (bat_voltage < config->batteryCellCount * config->batteryVoltageCutoff) {
-      Serial.println("POWER OFF");
-      GeekShield::instance()->powerOff();
+      GeekShield::instance()->processBatteryEvent(EventType::BatteryLow);
     }
 
   }    

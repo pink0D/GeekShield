@@ -19,7 +19,7 @@ protected:
   friend class GeekShield;
 
   // default values for GeekServo 360 to steer between -90..+90
-  void setup(int pin, int servo_min = 1000, int servo_max = 2000);
+  TechnicMotor* setup(int pin, int servo_min = 1000, int servo_max = 2000);
 
   void release();
 

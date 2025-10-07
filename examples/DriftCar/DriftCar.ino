@@ -22,16 +22,16 @@ Additionally:
 
 class CarDriftProfile : public ControlProfile {
   private:
-    PFMotor *motorA;
-    PFMotor *motorB;
-    GeekServo *geekServo;
+    TechnicMotor *motorA;
+    TechnicMotor *motorB;
+    TechnicMotor *geekServo;
 
   public:
     void setup(GeekShield *shield) {
-      motorA = shield->getPFMotor(GeekShield::Port::MotorA); motorA->invertControl(true);      
-      motorB = shield->getPFMotor(GeekShield::Port::MotorB);
+      motorA = shield->setupMotor(GeekShield::Port::MotorA); motorA->invertControl(true);      
+      motorB = shield->setupMotor(GeekShield::Port::MotorB); 
 
-      geekServo = shield->getGeekServo(GeekShield::Port::Servo1);
+      geekServo = shield->setupGeekServo(GeekShield::Port::Servo1);
       geekServo->invertControl(true); // invert direction if links are in front of the wheels
       //geekServo->limitControl(0.75);  // limit maximum rotation 
     };
