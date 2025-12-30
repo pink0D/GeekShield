@@ -5,7 +5,7 @@ GeekShield is a DIY shield for ESP32 with Power Functions and GeekServo motors s
 
 YouTube [demo 1](https://www.youtube.com/watch?v=nqUzDYmt8Ac), [demo 2](https://www.youtube.com/watch?v=292cAnSWLGk)
 
-VK [link](https://vk.com/legolabs)
+[Заказать готовый GeekShield можно через VK](https://vk.com/legolabs)
 
 # Features
 - Classic bluetooth gamepad support (Dualshock 4, DualSense, Xbox Wireless Controller and many others)
