@@ -7,131 +7,238 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 //
 
+
 #ifndef _GEEKSHIELD_H_
 #define _GEEKSHIELD_H_
 
-#include <Arduino.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <BluepadHub.h>
+#include <MultiServoUnit.h>
+#include <MultiMotorUnit.h>
+#include <NeoPixelStatusIndicator.h>
+#include <MotorDriverHBridge.h>
+#include <ServoPWM.h>
+#include <VoltageMonitor.h>
 
-#include <Bluepad32.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 
-#include "extras.h"
-
-#include "GeekShieldConfig.h"
-#include "ControlProfile.h"
-#include "TechnicMotor.h"
-#include "PFMotor.h"
-#include "GeekServo.h"
+#include "AnalogButton.h"
 #include "LedIndicator.h"
-#include "ButtonMonitor.h"
-#include "BatteryMonitor.h"
 
-typedef std::function<void(ControllerPtr controller)> ControllerCallback;
+#define ADC_NUM_SAMPLES 5
+#define ADC_HISTORY_SIZE 20
+#define ADC_MIN_VALUE 500
 
-class GeekShield {
+#define SERVO_1 0
+#define SERVO_2 1
+#define SERVO_3 2
+#define SERVO_4 3
+#define SERVO_5 4
+#define SERVO_6 5
+#define SERVO_7 6
+#define SERVO_8 7
+
+#define MOTOR_A 0
+#define MOTOR_B 1
+#define MOTOR_C 2
+#define MOTOR_D 3
+#define MOTOR_E 4
+#define MOTOR_F 5
+
+///////////////////////////////////////////////////////////////
+// GeekShield base class
+///////////////////////////////////////////////////////////////
+
+template <int numMotors, int numServos>
+class GeekShieldBase : 
+  protected bluepadhub::MultiServoUnit<numServos, bluepadhub::ServoPWM>, 
+  protected bluepadhub::MultiMotorUnit<numMotors, bluepadhub::MotorDriverHBridge>,
+  protected bluepadhub::VoltageMonitor,
+  private bluepadhub::DeepSleep,
+  protected bluepadhub::Profile
+{
+  
+  protected:
+
+    GeekShieldBase() {};
+
+    int adcPin = 0;
+    double adcScale = 0;
+
+    int getNumMotors() { return numMotors; };
+    int getNumServos() { return numServos; };
+
+    virtual void afterSetup(const int *motorPin1, const int *motorPin2, const int* servoPin, int adcPin, double adcScale) {
+
+      //setVoltageReadCount(5);
+      //setVoltageSampleCount(20);
+      
+      this->adcPin = adcPin;
+
+      if (adcScale > 0) {
+        this->adcScale = adcScale;
+      } else {
+        Serial.println("WARNING: adcScale is not set, battery discharge protection will not work!");
+      }
+
+      ::BluepadHub.setDeepSleep(this);
+
+      for (int i=0; i < numMotors; i++) {
+        this->motor(i)->begin(motorPin1[i], motorPin2[i], 1000);
+      }
+
+      for (int i=0; i < numServos; i++) {
+        this->servo(i)->begin(servoPin[i]);
+      }      
+    };
+
   public:
-    static GeekShield* instance() {
-      static GeekShield inst;
-      return &inst;
+
+    void begin() {
+      BluepadHub.begin();
+    };
+
+    void update() {
+      BluepadHub.update();
+    };
+
+    void stop() {
+      this->stopMotors();
+      this->stopServos();
+    };
+
+  private:
+
+    double readVoltage() override {       
+
+      return analogReadMilliVolts(adcPin) * adcScale / 1000.0;;
+    }; 
+
+    void failsafe() override {
+      stop();
+    };
+
+    bool isLowBatteryState() override {
+      
+      if (adcScale > 0)
+        return isLowBattery();
+
+      return false;
     }
 
-    const GeekShieldConfig* getConfig() {
-      return &config;
+    void idleTimer() override {
+      // go to deep sleep
+      BluepadHub.startDeepSleep();
     }
 
-    void setup(GeekShieldConfig config) {
-        this->config = config;
-        setup();
-    };
+};
 
-    void registerControllerCallback(const ControllerCallback &callback) {
-      this->controllerCallback = callback;
-    }
+///////////////////////////////////////////////////////////////
+// GeekShield 2.4
+///////////////////////////////////////////////////////////////
 
-    void loop();
+class GeekShieldV2 : public GeekShieldBase<2,4> {
+  public:
+    GeekShieldV2() {};
 
-    void addProfile(ControlProfile *profile);
-    void switchActiveProfile();
+  private:
+    const int powerCtlPin = 20;
+    const int ledPin = 13;
+    const int buttonPin = 21;
+    const int batteryVoltagePin = 37;
 
-    enum class Port {MotorA, MotorB, MotorC, MotorD, Servo1, Servo2, Servo3, Servo4, Servo5};
-
-    TechnicMotor* setupMotor(Port port, PFMotor::PwmType pwmType = PFMotor::PwmType::Scaled);
-    
-    TechnicMotor* setupProportionalServo(Port port) {  // original 15-positional servo
-      return setupMotor(port, PFMotor::PwmType::Fixed15);
-    };
-    TechnicMotor* setupSimpleServo(Port port) {   // simplified 3-positional servo
-      return setupMotor(port, PFMotor::PwmType::Fixed3);
-    };
-
-    // servo with default signal range
-    TechnicMotor* setupGeekServo(Port port, int servoMin = 1000, int servoMax = 2000);
-
-    // servo with extended signal range (GeekServo 360, GeekServo Continuous)
-    TechnicMotor* setupGeekServoExt(Port port, int servoMin = 500, int servoMax = 2500) {
-      return setupGeekServo(port, servoMin, servoMax);
-    };
-
-    int getActiveProfileDisplayIndex() {
-      return activeProfile + 1;
-    };
-
-    unsigned long getActiveProfileDisplayColor() {
-      ControlProfile *pActiveProfile = profiles[activeProfile];
-      return pActiveProfile->getLedColor();
-    };
+    const double batteryScale = 4.4;
 
   protected:
 
-    friend class LedIndicator;
-    friend class BatteryMonitor;
-    friend class ButtonMonitor;
+    bluepadhub::NeoPixelStatusIndicator indicator;
+    bluepadhub::MultiFunctionButton button;
+  
+    void beforeSetup() final {
 
-    void setup();
+      pinMode(powerCtlPin, OUTPUT);    // power hold pin
+      digitalWrite(powerCtlPin, HIGH);
 
-    void processButtonEvent(ButtonMonitor::ClickType clickType, ButtonMonitor::EventType eventType);
-    void processBatteryEvent(BatteryMonitor::EventType eventType);   
+      indicator.setBrightness(20);
+      indicator.begin(ledPin);
+    }
+
+    void afterSetup() final {
+
+      pinMode(batteryVoltagePin, INPUT); // ADC for voltage reading
+
+      button.begin(500, 5000, 10000, buttonPin, INPUT_PULLUP);
+
+      const int motorPin1[] = {33, 22};
+      const int motorPin2[] = {32, 19};
+      const int servoPin[] = {25, 26, 27, 14};
+
+      GeekShieldBase<2,4>::afterSetup(motorPin1, motorPin2, servoPin, batteryVoltagePin, batteryScale);
+    };
+
+    void beforeSleep() final {
+      digitalWrite(powerCtlPin, LOW);    // power hold pin
+    };
+};
+
+
+///////////////////////////////////////////////////////////////
+// GeekShield DIY
+///////////////////////////////////////////////////////////////
+
+template <int numServos, int numMotors>
+class GeekShieldDIY : public GeekShieldBase<numMotors,numServos> {
+  public:
+    GeekShieldDIY() {};
 
   private:
-    GeekShield();
+    const int powerCtlPin = 2;
+    const int ledPin = 4;
+    const int buttonPin = 0;
+    const int batteryVoltagePin = 0;
 
-    GeekShieldConfig config;
+  protected:
 
-    void init_nvs();
-    void setupMotorPin(int pin);
+    LedIndicator indicator;
+    AnalogButton button;
 
-    void disconnectController();
+    virtual double batteryAdcScale() = 0;
 
-    static void onConnectedController(ControllerPtr ctl);
-    static void onDisconnectedController(ControllerPtr ctl);
+    void beforeSetup() final {
 
-    ControllerPtr bp32Controller = nullptr;
+      WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 
-    long time_auto_power_off    = 0;
-    long time_controller_update = 0;
+      pinMode(powerCtlPin, OUTPUT);    // power off pin
+      digitalWrite(powerCtlPin, LOW);
 
-    bool lowPowerMode = false;
+      indicator.setBrightness(2);
+      indicator.begin(ledPin);
+    }
+  
+    void afterSetup() final {
 
-    ControlProfile* profiles[MAX_PROFILES];
-    int activeProfile = 0;
-    int numProfiles = 0;
+      pinMode(batteryVoltagePin, INPUT); // ADC for voltage reading
 
-    ControllerCallback controllerCallback = nullptr;
+      button.begin(500, 5000, 10000, buttonPin, INPUT);
 
-    PFMotor      motorPF[MAX_PFMOTORS];
-    GeekServo    motorServo[MAX_GEEKSERVOS];
-    TechnicMotor DummyMotor; // motor which is returned if no pins found in config
+      const int motorPin1[] = {14, 13};
+      const int motorPin2[] = {15, 12};
+      const int servoPin[] = {16, 12, 13, 15, 14};
 
-    void powerOff();
+      if ( (numMotors < 0) || (numServos < 0)
+            || (numMotors > 2) || (numServos > 5) 
+            || (numMotors*2 + numServos > 5) ) 
+      {
+        Serial.println("Invalid combination of numMotors and numServos for GeekShield");
+        indicator.setErrorStatus();
+      } else {
+        GeekShieldBase<numMotors,numServos>::afterSetup(motorPin1, motorPin2, servoPin, batteryVoltagePin, batteryAdcScale());
+      }
+    };
 
-    void stopMotors();
-    void releaseMotors();
-
-    bool checkIdleMotors();
-
-    void enablePairing();
-    void resetPairing();
+    void beforeSleep() final {
+      digitalWrite(powerCtlPin, HIGH);    // power off pin
+    };
 };
 
 #endif

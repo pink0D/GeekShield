@@ -10,59 +10,30 @@
 #ifndef _LED_INDICATOR_H_
 #define _LED_INDICATOR_H_
 
-#include "GeekShield.h"
+#include <Arduino.h>
 
-class LedIndicator {
+#include <BluepadHub.h>
+#include <ESP32PWM.h>    
+
+class LedIndicator : public bluepadhub::StatusIndicator {
   public:
-    enum class StatusPattern {None, Idle, Pairing, Connected, BatteryLow, Settings};
-    enum class EventPattern {None, PowerOff, Reset, ProfileSelect, SettingSaved};
 
-    static LedIndicator* instance();
-
-    virtual void setup() {};
-
-    void setStatusPattern(StatusPattern statusPattern) {
-      this->statusPattern = statusPattern;
-    };
-
-    void setEventPattern(EventPattern eventPattern) {
-      this->eventPattern = eventPattern;
-    };
-
-    virtual void showStatusPattern() {};
-    virtual void showEventPattern() {};
-
-  protected:
     LedIndicator() {};
 
-    void patternDelayMillis(int timeout);
-
-    StatusPattern statusPattern = StatusPattern::None;
-    EventPattern eventPattern = EventPattern::None;
-
-};
-
-class SimpleIndicator : public LedIndicator {
-  public:
-
-    static SimpleIndicator* instance() {
-      static SimpleIndicator inst;
-      return &inst;
-    };
-
-    virtual void setup();
+    virtual void begin(int16_t pin, bool setBluepadHubStatusIndicator = true);
+    virtual void clear();
 
     virtual void showStatusPattern();
     virtual void showEventPattern();
 
+    void setBrightness(uint8_t _ledBrightness);
+
   private:
-    SimpleIndicator() {};
+    void setLedLevel(double level);
 
-    const GeekShieldConfig *config;
-
-    void setLedLevel(uint8_t val);
+    uint8_t ledBrightness = 255;
 
     ESP32PWM pwm;
-};
+};  
 
 #endif

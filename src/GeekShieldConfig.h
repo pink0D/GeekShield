@@ -7,145 +7,77 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 //
 
-#ifndef _GEEK_SHIELD_CONFIG_H_
-#define _GEEK_SHIELD_CONFIG_H_
+#ifndef _GEEKSHIELD_CONFIG_H_
+#define _GEEKSHIELD_CONFIG_H_
 
-struct GeekShieldConfig { 
-  
-  /*
-  PCB pin mappings 
-  */
+#include <vector>
+#include <string>
+#include <ArduinoJson.h>
 
-  int pinVoltage = 0;   // not an error, this is GPIO0
-  int pinAuxButton = 0; // not an error, this is GPIO0
-  int pinPowerCtl = 2;
-  int pinLED = 4;
+class GeekShieldConfig {  
 
-  int pinMotorA1 = 14;
-  int pinMotorA2 = 15;
-  int pinMotorB1 = 13;
-  int pinMotorB2 = 12;
-  int pinMotorC1 = 0;
-  int pinMotorC2 = 0;
-  int pinMotorD1 = 0;
-  int pinMotorD2 = 0;
+    public:
 
-  int pinServo1 = 16;
-  int pinServo2 = 12;
-  int pinServo3 = 13;
-  int pinServo4 = 15;
-  int pinServo5 = 14;
+        GeekShieldConfig() {};
 
-  /*
-  Power control parameters
-  */
+        void loadDefaultSettings(int numMotors, int numServos);
+        bool loadSettingsFromJson(JsonDocument &json);
+        JsonDocument saveSettingsToJson(); 
 
-  int powerStateOn  = LOW;
-  int powerStateOff = HIGH;
+        enum class ControllerButton {NullButton, 
+            DpadUp, DpadDown, DpadLeft, DpadRight, 
+            L1, R1, L3, R3, 
+            Square, Triangle, Cross, Circle};
 
-  /*
-  LED indication (flash) parameters
-  */
+        enum class ControllerInput {NullInput, L2, R2, LeftStickX, LeftStickY, RightStickX, RightStickY};
 
-  bool ledRGB = false;
-  double ledBrightness = 0.005;
-  double ledFrequency  = 1000;
+        class PFPort {
 
-  /*
-  Values for additional ADC calibration. 
-  Unfortunately this doesn't make readings more accurate
-  */
+            public:
+                PFPort() {};
 
-  // this value however is also used to treat analog ADC readings as logical LOW
-  long adcLowValueMilliVolts = 500;       
+                int minPWM;
+                int maxPWM;
 
-  bool adcAdditionalCalibration = false;
-  double adcV1_true     = 1.3;
-  double adcV1_reading  = 1.3;  
-  double adcV2_true     = 2.6;
-  double adcV2_reading  = 2.6;  
+                ControllerInput input;
+                ControllerInput brake;
+                
+                bool invertInput;
+                ControllerButton invertButton;
+        };
 
-  /*
-  Button timings (milliseconds)
-  */
+        class ServoPort {
 
-  bool buttonMonitorEnable = true; // set this to 'false' if the PCB has no button
+            public:
+                ServoPort() {};
 
-  long buttonPressShort = 1000;     
-  long buttonPressLong  = 10000;    
-  long buttonPressHold  = 20000;
+                int maxAngle;
 
-  /*
-  Battery charge monitoring
-  */
+                ControllerInput input;
+                
+                bool invertInput;
+                ControllerButton invertButton;
+        };
 
-  bool batteryMonitorEnable = true; // set this to 'false' to disable battery monitoring
 
-  // this is the most important parameter, if it is not set explicitly during setup, the board will power off immidiately
-  double  batteryAdcScale             = 0; 
 
-  int     batteryCellCount            = 2;
-  double  batteryVoltageCutoff        = 3.2;  // absolute minimum battery cell voltage - the board will be powered off
-  double  batteryVoltageWarning       = 3.3;  // battery level when motors are disabled
+        // begin parameters
 
-  long    batteryCheckTaskDelayMillis      = 2000;
-  int     batteryCheckSampleCount          = 5;
-  int     batteryCheckSampleIntervalMillis = 100;
+        std::string deviceName;
 
-  /*
-  Power Functions parameters
-  */
+        std::vector<PFPort> pf;
+        std::vector<ServoPort> servo;
 
-  double pfMotorPwmFrequency   = 1000;  // motor PWM frequency
-  double pfMotorPwmMinimumDuty = 0.25;  // minimum duty cycle
+        // end parameters
 
-  double motorAntiJitterDefault = 0.05; // minimum change in duty cycle that is sent to motors - used to avoid servo jittering
+    private:
+        
+        static std::string mapControllerButtonToString(ControllerButton btn);
+        static ControllerButton mapStringToControllerButton(std::string str);
 
-  /*
-  Controller input adjustments
-  */
+        static std::string mapControllerInputToString(ControllerInput input);
+        static ControllerInput mapStringToControllerInput(std::string str);
 
-  int controllerStickDeadzoneLow = 50; 
-  int controllerStickDeadzoneHigh = 500;
-
-  int controllerTriggerDeadzoneLow = 5;
-  int controllerTriggerDeadzoneHigh = 1000;
-
-  /*
-  Timeouts (milliseconds)
-  */
-
-  long idleTimeout       = 300000; // power off when there's no input
-  long controllerTimeout = 500;    // stop motors when no data from controller is received (possibly out of range)
-  bool controllerAutoDisconnect = false; // drop BT connection if no controller data received
-};
-
-struct GeekShield20Config : public GeekShieldConfig{ 
-  public:
-    GeekShield20Config() {
-      
-      batteryAdcScale = 4.4;
-      powerStateOn = HIGH;
-      powerStateOff = LOW;
-      ledRGB = true;
-      ledBrightness = 0.15;
-
-      pinVoltage = 37;   
-      pinAuxButton = 21; 
-      pinPowerCtl = 20;
-      pinLED = 13;
-
-      pinMotorA1 = 32;
-      pinMotorA2 = 33;
-      pinMotorB1 = 19;
-      pinMotorB2 = 22;
-
-      pinServo1 = 25;
-      pinServo2 = 26;
-      pinServo3 = 27;
-      pinServo4 = 14;
-      pinServo5 = 0;      
-    }
 };
 
 #endif
