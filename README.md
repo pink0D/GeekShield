@@ -20,7 +20,7 @@ YouTube [demo 1](https://www.youtube.com/watch?v=nqUzDYmt8Ac), [demo 2](https://
 
 Information about GeekShield is available in [wiki](https://github.com/pink0D/GeekShield/wiki)
 - [Hardware](https://github.com/pink0D/GeekShield/wiki/Making-the-GeekShield)
-- [Code examples](https://github.com/pink0D/GeekShield/blob/main/examples/BasicControllers/BasicControllers.ino)
+- [Code example](https://github.com/pink0D/GeekShield/blob/main/examples/GeekShieldDIY/GeekShieldDIY/GeekShieldDIY.ino)
 
 # License
 - GeekShield is open source and licensed under the MIT License
