@@ -25,10 +25,6 @@
 #include "AnalogButton.h"
 #include "LedIndicator.h"
 
-#define ADC_NUM_SAMPLES 5
-#define ADC_HISTORY_SIZE 20
-#define ADC_MIN_VALUE 500
-
 #define SERVO_1 0
 #define SERVO_2 1
 #define SERVO_3 2
@@ -55,7 +51,7 @@ class GeekShieldBase :
   protected bluepadhub::MultiMotorUnit<numMotors, bluepadhub::MotorDriverHBridge>,
   protected bluepadhub::VoltageMonitor,
   private bluepadhub::DeepSleep,
-  protected bluepadhub::Profile
+  public bluepadhub::Profile
 {
   
   protected:
@@ -69,9 +65,6 @@ class GeekShieldBase :
     int getNumServos() { return numServos; };
 
     virtual void afterSetup(const int *motorPin1, const int *motorPin2, const int* servoPin, int adcPin, double adcScale) {
-
-      //setVoltageReadCount(5);
-      //setVoltageSampleCount(20);
       
       this->adcPin = adcPin;
 
@@ -124,12 +117,12 @@ class GeekShieldBase :
         return isLowBattery();
 
       return false;
-    }
+    };
 
     void idleTimer() override {
       // go to deep sleep
       BluepadHub.startDeepSleep();
-    }
+    };
 
 };
 

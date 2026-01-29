@@ -7,19 +7,22 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 //
 
-#include <GeekShieldStarter.h>
+#include <GeekShield.h>
+#include <UniProfile.h>
 
-GeekShieldStarter<GeekShieldV2> shield;
+bluepadhub::UniProfile<GeekShieldV2> uni;
 
 //  Arduino setup function
 void setup() {
   // uncomment delay to see full Serial output during board startup in Arduino IDE
   //delay(2000) 
-  shield.begin();
+  uni.setDefaultDeviceName("GeekShield");
+  uni.setDefaultMinPWM(25);
+  uni.begin();
 }
 
 // Arduino loop function
 void loop() {
-  shield.update();
-  //no delay here because it's inside shield.update()
+  uni.update();
+  //no delay here because it's inside uni.update()
 }
